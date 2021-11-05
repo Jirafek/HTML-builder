@@ -13,7 +13,7 @@ fs.readdir(folder, (err, files) => {
 
         fs.stat(fileName, (err, stats) => {
             if(err) throw err;
-            let fileSize = `${stats.size / 1024} kb`;
+            let fileSize = `${stats.size} b`;
             if(stats.isFile()) {
                 console.log(`${name} - ${teg} - ${fileSize}`)
             }

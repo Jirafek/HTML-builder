@@ -78,14 +78,22 @@ fs.readdir(assets, (err, files_b) => {
         fs.readdir(file, (err, list) => {
             if(err) throw err;
             list.forEach(fileForCopy => {
+                let inside_aseets_file = path.join(inside_assets_copy, fileForCopy)
                 let full_file = path.join(file, fileForCopy)
-                fs.readFile(full_file, 'utf-8', (err, data) => {
-                    if(err) throw err;
-                    let inside_aseets_file = path.join(inside_assets_copy, fileForCopy)
-                    fs.appendFile(inside_aseets_file, data, (err) => {
-                        if(err) throw err;
-                    })
-                })
+                // let extFileForCopy = path.parse(fileForCopy).ext
+                // if(extFileForCopy === '.jpg') {
+                        fs.copyFile(full_file, inside_aseets_file, (err) => {
+                            if(err) throw err
+                        });
+                // } else {
+                //     fs.readFile(full_file, 'utf-8', (err, data) => {
+                //         if(err) throw err;
+                //         fs.appendFile(inside_aseets_file, data, (err) => {
+                //             if(err) throw err;
+                //         })
+                //     })
+                // }
+                
             })
         })
     })

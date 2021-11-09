@@ -9,11 +9,13 @@ const assets = path.join(__dirname, 'assets');
 
 const components = path.join(__dirname, 'components');
 
-fs.mkdir(dist, { recursive: true }, err => {
-    if(err) throw err;
-})
+function setDist() {
 
-const html = path.join(dist, 'index.html');
+    fs.mkdir(dist, { recursive: true }, err => {
+        if(err) throw err;
+    })
+
+    const html = path.join(dist, 'index.html');
 const style = path.join(dist, 'style.css');
 
 fs.open(html, 'w', (err) => {
@@ -34,9 +36,9 @@ fs.readFile(code, 'utf-8', (err, data) => {
             if(err) throw err;
             files_html.forEach(htmlFile => {
                 let htmlWay = path.join(components, htmlFile)
-                let htmlName = htmlFile.split('.')[0]
-                let htmlExt = htmlFile.split('.')[1]
-                if(htmlExt === 'html') {
+                let htmlName = path.parse(htmlFile).name
+                let htmlExt = path.parse(htmlFile).ext
+                if(htmlExt === '.html') {
                     fs.readFile(htmlWay, 'utf-8', (err, htmlData) => {
                         if(err) throw err;
                         data_l = data_l.replace(new RegExp(`{{${htmlName}}}`, 'g'), htmlData)
@@ -93,3 +95,40 @@ fs.readdir(assets, (err, files_b) => {
         })
     })
 })
+}
+
+function DelDir(dir){
+    fs.readdir(dir, (err, files) => {
+       if(err) throw err;
+
+       files.forEach(file => {
+           let fileName = path.join(dir, file)
+           fs.stat(fileName, (err, status) => {
+               if(err) throw err;
+
+               if(status.isDirectory()) {
+                DelDir(fileName)
+               } else {
+                   fs.unlink(fileName, (err) => {
+                       if(err) throw err
+                   })
+               }
+           })
+       })
+    });
+    fs.rmdir(dir, { recursive: true }, err => {
+        if(err) throw err;
+    })
+ }
+
+fs.access(dist, (err) => {
+    if(err) {
+        setDist()
+    } else {
+        DelDir(dist)
+        setTimeout(() => {
+            setDist()
+        }, 500)
+    }
+})
+

@@ -9,7 +9,7 @@ fs.readdir(folder, (err, files) => {
         let fileName = path.join(folder, file)
 
         let teg = path.extname(file).slice(1);
-        let name = file.split('.')[0];
+        let name = path.parse(file).name
 
         fs.stat(fileName, (err, stats) => {
             if(err) throw err;
